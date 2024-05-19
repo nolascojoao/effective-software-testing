@@ -37,5 +37,28 @@ public class PlanningPokerTest {
 	}
 	// Ensures that the program throws an exception if a list with a single 
 	// estimate is passed
+	
+	@Test
+	void twoEstimates() {
+		List<Estimate> list = Arrays.asList(
+				new Estimate("Mauricio", 10),
+				new Estimate("Frank", 5)
+				);
+		List<String> devs = new PlanningPoker().identifyExtremes(list);
+		
+		Assertions.assertThat(devs).containsExactlyInAnyOrder("Mauricio", "Frank");
+	}
+	
+	@Test
+	void manyEstimates() {
+		List<Estimate> list = Arrays.asList(
+				new Estimate("Mauricio", 10),
+				new Estimate("Arie", 5),
+				new Estimate("Frank", 7)
+				);
+		List<String> devs = new PlanningPoker().identifyExtremes(list);
+		
+		Assertions.assertThat(devs).containsExactlyInAnyOrder("Mauricio", "Arie");
+	}
 
 }
