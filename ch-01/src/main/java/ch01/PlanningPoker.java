@@ -13,7 +13,8 @@ public class PlanningPoker {
 			if (highestEstimate == null || 
 					estimate.getEstimate() > highestEstimate.getEstimate()) {
 				highestEstimate = estimate;
-			} else if (lowestEstimate == null || 
+			} 
+			if (lowestEstimate == null || 
 					estimate.getEstimate() < lowestEstimate.getEstimate()) {
 				lowestEstimate = estimate;
 			}
