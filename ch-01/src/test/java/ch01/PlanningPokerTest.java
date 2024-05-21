@@ -7,6 +7,13 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import net.jqwik.api.Arbitraries;
+import net.jqwik.api.Arbitrary;
+import net.jqwik.api.Combinators;
+import net.jqwik.api.ForAll;
+import net.jqwik.api.Property;
+import net.jqwik.api.Provide;
+
 public class PlanningPokerTest {
 	
 	@Test
@@ -59,6 +66,32 @@ public class PlanningPokerTest {
 		List<String> devs = new PlanningPoker().identifyExtremes(list);
 		
 		Assertions.assertThat(devs).containsExactlyInAnyOrder("Mauricio", "Arie");
+	}
+	
+	@Property
+	void inAnyOrder(@ForAll("estimates") List<Estimate> estimates) {
+		estimates.add(new Estimate("MrLowEstimate", 1));
+		estimates.add(new Estimate("MsHighEstimate", 100));
+		
+		Collections.shuffle(estimates);
+		
+		List<String> dev = new PlanningPoker().identifyExtremes(estimates);
+		
+		Assertions.assertThat(dev)
+			.containsExactlyInAnyOrder("MrLowEstimate", "MsHighEstimate");
+	}
+	
+	@Provide
+	Arbitrary<List<Estimate>>estimates() {
+		Arbitrary<String> names = Arbitraries.strings()
+				.withCharRange('a', 'z').ofLength(5);
+		
+		Arbitrary<Integer> values = Arbitraries.integers().between(2, 99);
+		
+		Arbitrary<Estimate>estimates = Combinators.combine(names, values)
+				.as((name, value) -> new Estimate(name, value));
+		
+		return estimates.list().ofMinSize(1);
 	}
 
 }
